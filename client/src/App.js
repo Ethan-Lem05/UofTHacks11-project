@@ -3,6 +3,19 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import { IoSparkles } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
 import {useState, useEffect, useRef} from 'react'
+import firebase from 'firebase/app';
+import { collection,
+  addDoc,
+  where,
+  serverTimestamp,
+  onSnapshot,
+  query,
+  orderBy } from 'firebase/firestore'
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+
 
 
 export function Memories(props) {
@@ -61,14 +74,41 @@ export function App() {
 
 export function ChatPage(props) {
 
-  const [chatPreview, setChatPreview] = useState([["jhon", "dude I have some crazy news"], ["cindy", 'i think its time for a break']])
-  const [currentChat, setCurrentChat] = useState([["user1", "hello"], ["jhon", "hi"], ["user1", "my days been shit"]])
+  const [chatPreview, setChatPreview] = useState()
+  const [currentChat, setCurrentChat] = useState()
   const currentMessage = useRef()
 
-  const UpdateMessages = () => {
-    const updatedChat = [... currentChat, [props.userName, currentMessage.current]]
-    setCurrentChat(updatedChat)
-    console.log(props.userName)
+  useEffect(() => {
+    const queryMessages = query(
+      messagesRef,
+      where("room==messages"),
+      orderBy("createdAt")
+    );
+    const unsuscribe = onSnapshot(queryMessages, (snapshot) => {
+      snapshot.forEach((doc) => {
+        setCurrentChat(prev=> [...prev, doc.data() ]);
+      });
+    });
+
+    return () => unsuscribe();
+  }, []);
+
+
+  const UpdateMessages = async (event) => {
+    //const updatedChat = [... currentChat, [props.userName, currentMessage.current]]
+    //setCurrentChat(updatedChat)
+    //console.log(props.userName)
+    event.preventDefault();
+
+    const messagesRef = collection(db, "messages")
+    await addDoc(messagesRef, {
+      text: currentMessage.current,
+      createdAt: serverTimestamp(),
+      user: props.userName,
+      room: 'messages',
+    });
+
+    currentMessage.current = "";
   }
 
   const changeCurrentChat = (user) => {
@@ -103,14 +143,14 @@ export function ChatPage(props) {
       <div style={{height: '100%', flex: 12, backgroundColor: '#dbdbdb', borderRadius: 25, margin: 5, display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', overflowY: 'scroll'}}>
          <div style={{display: 'flex', flexDirection: 'column', padding: 10}}>
           {currentChat.map((data) =>  (
-            <div style={{alignSelf: data[0] == props.userName? 'flex-end' : 'flex-start', backgroundColor: data[0] == props.userName? '#6899ed' : '#f2f2f2', borderRadius: 10, margin: '0.5rem'}}>
-              <p style={{margin: '0.5rem'}}>{data[1]}</p>
+            <div style={{alignSelf: data.sender == props.userName? 'flex-end' : 'flex-start', backgroundColor: data[0] == props.userName? '#6899ed' : '#f2f2f2', borderRadius: 10, margin: '0.5rem'}}>
+              <p style={{margin: '0.5rem'}}>{data.text}</p>
             </div>
           ))}
          </div>
          <div style={{display: 'flex', justifyContent: 'center'}}>
             <input onChange={e => currentMessage.current = e.target.value} style={{width: '55rem', backgroundColor: '#f2f2f2', padding: 10, borderRadius: 10, borderStyle: 'none', margin: '1rem'}} placeholder='message...'/>
-            <button onClick={() => UpdateMessages()}style={{color: 'white', width: '4rem', backgroundColor: '#6899ed', padding: 10, borderRadius: 10, borderStyle: 'none', margin: '1rem'}}>send</button>
+            <button onClick={(e) => UpdateMessages(e)} style={{color: 'white', width: '4rem', backgroundColor: '#6899ed', padding: 10, borderRadius: 10, borderStyle: 'none', margin: '1rem'}}>send</button>
          </div>
       </div>
     </div>
