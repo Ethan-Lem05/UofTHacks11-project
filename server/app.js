@@ -20,8 +20,9 @@ admin.initializeApp({
 
 //initialize firestore
 const db = admin.firestore();
-const msgsRef = db.collection('msgs');
+//const msgsRef = db.collection('msgs');
 const conversationRef = db.collection('Conversations');
+const usersRef = db.collection('users');
 
 // Configure session middleware
 app.use(session({
@@ -104,16 +105,19 @@ app.listen(port, () => console.log(`Server listening on port ${port}!`));
 //Listens over the message collection
 const conversationsRef = firebase.database().ref('conversations');
 
-// each conversation has a listener placed on it that listens for changes in the messages
-conversationsRef.on('message-added', (snapshot) => {
-    const conversationId = snapshot.key;
-    const messagesRef = conversationsRef.child(`${conversationId}/messages`);
+// Assuming conversationsRef is a reference to a Firestore collection
+conversationsRef.onSnapshot((snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+            const conversationId = change.doc.id;
+            const messagesRef = conversationsRef.doc(`${conversationId}/messages`);
 
-    messagesRef.on('value', (snapshot) => {
-        // Update the DOM with the new message
-        const message = snapshot.val();
-
-    }, (errorObject) => {
-        console.log('The read failed: ' + errorObject.name);
+            messagesRef.onSnapshot((snapshot) => {
+                // Update the DOM with the new message
+                const message = snapshot.data();
+            }, (error) => {
+                console.log('The read failed: ', error);
+            });
+        }
     });
 });
