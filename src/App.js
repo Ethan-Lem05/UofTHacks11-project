@@ -42,6 +42,12 @@ export function Portal(props) {
 
 export function Login(props) {
 
+  const sendInfo = async () => {
+      props.setUsername(username.current)
+      await fetch('http://127.0.0.1:5000/login', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: props.userName }) })
+      
+  }
+
   const username = useRef('')
   const password = useRef('')
   return (
@@ -50,7 +56,7 @@ export function Login(props) {
       <h1>I N S E R T   N A M E</h1>
       <input style={{backgroundColor: '#dbdbdb', borderRadius: 10, borderStyle: 'none', margin: '0.5rem', padding: 10}} onChange={(e) => username.current = e.target.value} placeholder='username...'/>
       <input style={{backgroundColor: '#dbdbdb', borderRadius: 10, borderStyle: 'none', margin: '0.5rem', padding: 10}} onChange={(e) => password.current = e.target.value} type='password' placeholder='password...'/>
-      <button style={{backgroundColor: '#dbdbdb', borderRadius: 10, borderStyle: 'none', margin: '0.5rem', padding: 10}} onClick={() => props.setUsername(username.current)}>Login</button>
+      <button onClick={() => sendInfo()} style={{backgroundColor: '#dbdbdb', borderRadius: 10, borderStyle: 'none', margin: '0.5rem', padding: 10}} >Login</button>
     </div>
   )
 }
@@ -80,15 +86,12 @@ export function ChatPage(props) {
 
   const UpdateMessages = () => {
     socket.send(JSON.stringify({ type: "message", content: currentMessage.current }));
-  
+    const updatedChat = [...currentChat, [props.userName, currentMessage.current]];
+    setCurrentChat(updatedChat);
     // Move state update to the socket.send callback
-    socket.addEventListener("message", (event) => {
-      const updatedChat = [...currentChat, [props.userName, currentMessage.current]];
-      setCurrentChat(updatedChat);
-    });
   
     console.log(props.userName);
-  };
+    };
 
   return (
     <div className='panel'>
