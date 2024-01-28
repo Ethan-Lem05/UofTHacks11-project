@@ -1,1 +1,95 @@
+.panel {
+    height: 92vh;
+    padding: 15px;
+    display: flex;
+}
 
+.subpanel-1 {
+    display: flex;
+    width: 75px;
+    min-width: 75px;
+    background-color: #131a54;
+    border-radius: 10px;
+    margin: 5px;
+    align-items: center;
+    flex-direction: column;
+}
+
+.subpanel-2 {
+    flex: 2;
+    background-color: white;
+    margin: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 1rem;
+    min-width: 225px;
+}
+
+.subpanel-2>* {
+    width: 100%;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 1rem;
+}
+
+.subpanel-2>input {
+    margin-top: 1rem;
+    padding: 7px;
+}
+
+.subpanel-2>div {
+    background-color: #f2f2f2;
+    height: 5rem;
+}
+
+.subpanel-3 {
+    flex: 5;
+    height: 100%;
+    background-color: #dbdbdb;
+    border-radius: 15px;
+    margin: 5px;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    overflow-y: hidden;
+    min-width: 350px;
+}
+
+.icon {
+    margin-top: 2rem;
+}
+
+.message-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.message-controls {
+    display: flex;
+    justify-content: center;
+    margin: 0px;
+}
+
+.message-controls>* {
+    padding: 10px;
+    border-radius: 10px;
+    border-style: none;
+    margin: 0.9rem;
+    margin-top: 0.8rem;
+}
+
+.message-controls>input {
+    background-color: #f2f2f2;
+    width: 100%;
+    margin-right: 0;
+}
+
+.message-controls>button {
+    color: white;
+    width: 4rem;
+    background-color: #6899ed;
+    cursor: pointer;
+}
