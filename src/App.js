@@ -42,9 +42,12 @@ export function Portal(props) {
 
 export function Login(props) {
 
-  const sendInfo = async () => {
-      props.setUsername(username.current)
+  
+  const sendInfo = async() => {
       await fetch('http://127.0.0.1:5000/login', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: props.userName }) })
+              .then(response => response.json())
+              .then(data => data.map(info => props.setCurrentChat(prev => [...prev, [info.sender, info.text]])))
+      props.setUsername(username.current)
       
   }
 
@@ -63,9 +66,11 @@ export function Login(props) {
 
 export function App() {
   const [userName, setUsername] = useState()
+  const [currentChat, setCurrentChat] = useState() 
+
   return (
    <div>
-    {userName==undefined? <Login setUsername={setUsername}/> : <Portal userName={userName} setUsername={setUsername}/>}
+    {userName==undefined? <Login setCurrentChat={setCurrentChat} setUsername={setUsername}/> : <Portal currentChat={currentChat} userName={userName} setUsername={setUsername}/>}
    </div>
   )
 }
@@ -73,7 +78,7 @@ export function App() {
 export function ChatPage(props) {
 
   const [chatPreview, setChatPreview] = useState([["jhon", "dude I have some crazy news"], ["cindy", 'i think its time for a break']])
-  const [currentChat, setCurrentChat] = useState([["user1", "hello"], ["jhon", "hi"], ["user1", "my days been shit"]])
+  
   const currentMessage = useRef()
   const socketRef = useRef(null);
 
