@@ -3,6 +3,10 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import { IoSparkles } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
 import {useState, useEffect, useRef} from 'react'
+import io from "socket.io-client";
+const socket = io.connect("ws://127.0.0.1:5000");
+
+
 
 
 export function Memories(props) {
@@ -65,16 +69,27 @@ export function ChatPage(props) {
   const [chatPreview, setChatPreview] = useState([["jhon", "dude I have some crazy news"], ["cindy", 'i think its time for a break']])
   const [currentChat, setCurrentChat] = useState([["user1", "hello"], ["jhon", "hi"], ["user1", "my days been shit"]])
   const currentMessage = useRef()
+  const socketRef = useRef(null);
+
+  useEffect(() => {
+    socketRef.current = new WebSocket("ws://127.0.0.1:5000");
+    socket.on("Message Received", (data) => {
+      setCurrentChat(prev=> [...prev, data.message]);
+    });
+  }, [socket]);
 
   const UpdateMessages = () => {
-    const updatedChat = [... currentChat, [props.userName, currentMessage.current]]
-    setCurrentChat(updatedChat)
-    console.log(props.userName)
-  }
+    socket.send(JSON.stringify({ type: "message", content: currentMessage.current }));
+  
+    // Move state update to the socket.send callback
+    socket.addEventListener("message", (event) => {
+      const updatedChat = [...currentChat, [props.userName, currentMessage.current]];
+      setCurrentChat(updatedChat);
+    });
+  
+    console.log(props.userName);
+  };
 
-  const changeCurrentChat = (user) => {
-
-  }
   return (
     <div className='panel'>
       <div className='subpanel-1'>
@@ -92,7 +107,7 @@ export function ChatPage(props) {
       <div className='subpanel-2'>
         <input className="input-1" placeholder='search' type='text'/>
         {chatPreview.map((data) => (
-        <div style={{backgroundColor: '#f2f2f2', width: '100%', borderRadius: 10, padding: 5, height: '5rem', margin: '1rem', display: 'flex'}} onClick={() => changeCurrentChat(data[0])}>
+        <div style={{backgroundColor: '#f2f2f2', width: '100%', borderRadius: 10, padding: 5, height: '5rem', margin: '1rem', display: 'flex'}} >
           <div style={{flex: 3, justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
               <FaRegCircleUser flex={4} color='grey' size={40} />
             </div>
