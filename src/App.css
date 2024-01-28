@@ -56,7 +56,7 @@
     border-radius: 15px;
     margin: 5px;
     display: flex;
-    justify-content: flex-end;
+    /* justify-content: flex-end; */
     flex-direction: column;
     overflow-y: hidden;
     min-width: 350px;
@@ -67,10 +67,12 @@
 }
 
 .message-panel {
+    justify-content: flex-end;
     display: flex;
     flex-direction: column;
     padding: 10px;
     overflow-y: auto;
+    height:100%;
 }
 
 .message-controls {
