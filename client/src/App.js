@@ -75,7 +75,7 @@ export function ChatPage(props) {
 
   }
   return (
-    <div style={{height: '42rem', padding: 20, display: 'flex'}}>
+    <div style={{height: '92vh', padding: 20, display: 'flex'}}>
       <div style={{display: 'flex',flex: 1, backgroundColor: '#131a54', borderRadius: 25, margin: 5, alignItems: 'center', flexDirection: 'column'}}>
         <div style={{marginTop: '2rem'}}>
           <FaRegCircleUser color='white' size={30} />
@@ -91,7 +91,7 @@ export function ChatPage(props) {
       <div style={{flex: 3, backgroundColor: '#dbdbdb', borderRadius: 25, 
                   margin: 5, display: 'flex', alignItems: 'center', 
                   flexDirection: 'column'}}>
-        <input style={{marginTop: '2rem', backgroundColor: 'transparent', padding: 5, borderRadius: 10, borderStyle: 'solid'}} placeholder='search' type='text'/>
+        <input style={{width: '11rem', marginTop: '2rem', backgroundColor: 'transparent', padding: 10, borderRadius: 10, borderStyle: 'solid'}} placeholder='search' type='text'/>
         {chatPreview.map((data) => (
         <div onClick={() => changeCurrentChat(data[0])} style={{backgroundColor: '#f2f2f2', width: '12rem', borderRadius: 10, padding: 5, height: '5rem', margin: '1rem'}}>
           <p style={{ margin: 0 }}><strong>{data[0]}:</strong></p>
@@ -99,8 +99,7 @@ export function ChatPage(props) {
         </div>
       ))}
       </div>
-
-      <div style={{height: '100%', flex: 12, backgroundColor: '#dbdbdb', borderRadius: 25, margin: 5, display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', overflowY: 'scroll'}}>
+      <div style={{height: '100%', backgroundColor: '#dbdbdb', borderRadius: 25, margin: 5, display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', overflowY: 'scroll'}}>
          <div style={{display: 'flex', flexDirection: 'column', padding: 10}}>
           {currentChat.map((data) =>  (
             <div style={{alignSelf: data[0] == props.userName? 'flex-end' : 'flex-start', backgroundColor: data[0] == props.userName? '#6899ed' : '#f2f2f2', borderRadius: 10, margin: '0.5rem'}}>
@@ -110,7 +109,7 @@ export function ChatPage(props) {
          </div>
          <div style={{display: 'flex', justifyContent: 'center'}}>
             <input onChange={e => currentMessage.current = e.target.value} style={{width: '55rem', backgroundColor: '#f2f2f2', padding: 10, borderRadius: 10, borderStyle: 'none', margin: '1rem'}} placeholder='message...'/>
-            <button onClick={() => UpdateMessages()}style={{color: 'white', width: '4rem', backgroundColor: '#6899ed', padding: 10, borderRadius: 10, borderStyle: 'none', margin: '1rem'}}>send</button>
+            <button onClick={() => UpdateMessages()} style={{color: 'white', width: '4rem', backgroundColor: '#6899ed', padding: 10, borderRadius: 10, borderStyle: 'none', margin: '1rem'}}>send</button>
          </div>
       </div>
     </div>
